@@ -100,21 +100,6 @@ class RLHyperHeuristic(HyperHeuristic):
         with open(filepath, "w") as f:
             json.dump(self.q_values, f, indent=4)
 
-    def load_q_values(self, filepath="q_values.json"):
-        """
-        Loads Q-values from a JSON file if it exists.
-
-        Args:
-            filepath (str): Path to the file from which to load Q-values.
-        """
-        try:
-            with open(filepath, "r") as f:
-                self.q_values = json.load(f)
-            # Ensure all keys are strings and values are floats
-            self.q_values = {str(k): float(v) for k, v in self.q_values.items()}
-        except FileNotFoundError:
-            print(f"File {filepath} not found. Initial Q-values will be used.")
-
     def reset_counters(self):
         """
         Resets internal counters, heuristic tracking, and step count.
