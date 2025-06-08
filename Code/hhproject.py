@@ -101,8 +101,8 @@ if __name__ == "__main__":
     for run in range(1, 31):
         
         print(f"Running Hyper-Heuristic #{run}")
-        # Instantiate an RL-based hyper-heuristic with a small epsilon (for exploration)
-        rl_hh = RLHyperHeuristic(heuristics, epsilon=0.1)
+        # Instantiate an RL-based hyper-heuristic with a neutral epsilon (for exploration)
+        rl_hh = RLHyperHeuristic(heuristics, epsilon=0.5)
         
         # Create the result directory if it doesn't exist
         result_dir = f"Results/Results {run}"
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             domain="BPP",
             folders=folders,
             hyperHeuristic=rl_hh,
-            repetitions=3,  # Solve each instance 3 times
+            repetitions=5,  # Solve each instance 3 times
             reset_counters=True,  # Reset usage counters between runs
             
             csv_path=os.path.join(result_dir, "resultados_globales.csv"), # Output results file

@@ -207,19 +207,14 @@ class BPP(Problem):
             return selected
 
         elif heuristic == "AWFIT":
-            # Almost Worst Fit: Selects the second worst fit
-            waste = -sys.maxsize - 1
-            waste2 = -sys.maxsize - 1
-            selectedTmp = None
-            for bin in self._openBins:
-                if bin.canPack(item):
-                    tmp = bin.getCapacity() - item.getLength()
-                    if tmp > waste:
-                        selected = selectedTmp
-                        selectedTmp = bin
-                        waste2 = waste
-                        waste = tmp
-            return selected if selected else selectedTmp
+            # Almost Worst Fit: Select the bin with the second largest remaining space
+            candidates = [bin for bin in self._openBins if bin.canPack(item)]
+            if not candidates:
+                return None
+            # Ordenar bins por espacio sobrante (capacidad - longitud item), descendente
+            candidates.sort(key=lambda b: b.getCapacity() - item.getLength(), reverse=True)
+            # Retornar segundo peor si hay al menos dos, sino el peor (primero)
+            return candidates[1] if len(candidates) > 1 else candidates[0]
 
         else:
             raise Exception("Heuristic '" + heuristic + "' is not recognized by the system.")

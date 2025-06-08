@@ -11,7 +11,7 @@ class RLHyperHeuristic(HyperHeuristic):
     heuristic selection. It follows an epsilon-greedy policy with softmax exploration.
     """
 
-    def __init__(self, heuristics, epsilon=0.3, alpha=0.5, epsilon_decay=0.98, epsilon_min=0.05):
+    def __init__(self, heuristics, epsilon=0.5, alpha=0.5, epsilon_decay=0.98, epsilon_min=0.05):
         self.heuristics = heuristics
         self.epsilon = epsilon
         self.alpha = alpha
@@ -35,18 +35,28 @@ class RLHyperHeuristic(HyperHeuristic):
 
         # Update Q-value if previous step exists
         if self.last_state is not None and self.last_heuristic is not None:
-            reward = self.last_waste - current_waste
-            if reward == 0:
-                reward = -0.05  # Encourage change
+            
+            # Calculate raw improvement in waste
+            raw_reward = self.last_waste - current_waste
+            
+            # Normalize the reward relative to previous waste to avoid scale issues
+            if self.last_waste > 1e-5:
+                normalized_reward = raw_reward / self.last_waste
+            else:
+                normalized_reward = 0.0
+            
+            # Clip reward to the range [-1, 1] to prevent extreme Q-value updates
+            reward = max(min(normalized_reward, 1.0), -1.0)
+            
             self._update_q_value(self.last_state, self.last_heuristic, reward)
 
         # Make sure state exists in Q-table
         if current_state not in self.q_values:
-            self.q_values[current_state] = {h: 0.0 for h in self.heuristics}
+            self.q_values[current_state] = {h: 1.0 for h in self.heuristics}
 
         # Select heuristic
         if random.random() < self.epsilon:
-            heuristic = self._softmax_select(current_state)
+            heuristic = random.choice(self.heuristics)
         else:
             heuristic = max(self.q_values[current_state], key=self.q_values[current_state].get)
 
@@ -59,6 +69,9 @@ class RLHyperHeuristic(HyperHeuristic):
         self.epsilon = max(self.epsilon * self.epsilon_decay, self.epsilon_min)
 
         return heuristic
+    
+    def _discretize(self, value, step=0.1):
+        return round(round(value / step) * step, 2)
 
     def _get_state_from_features(self, problem):
         """
@@ -67,12 +80,14 @@ class RLHyperHeuristic(HyperHeuristic):
         Returns:
             str: A hashable string representing the discretized state.
         """
+
         features = [
-            round(problem.getFeature("OPEN"), 2),
-            round(problem.getFeature("LENGTH"), 2),
-            round(problem.getFeature("SMALL"), 2),
-            round(problem.getFeature("LARGE"), 2)
+            self._discretize(problem.getFeature("OPEN")),
+            self._discretize(problem.getFeature("LENGTH")),
+            self._discretize(problem.getFeature("SMALL")),
+            self._discretize(problem.getFeature("LARGE"))
         ]
+        
         return str(features)  # e.g., "[0.3, 0.7, 0.5, 0.5]"
 
     def _update_q_value(self, state, heuristic, reward):
@@ -86,21 +101,6 @@ class RLHyperHeuristic(HyperHeuristic):
         """
         current_q = self.q_values[state][heuristic]
         self.q_values[state][heuristic] = current_q + self.alpha * (reward - current_q)
-
-    def _softmax_select(self, state):
-        """
-        Chooses a heuristic probabilistically via softmax distribution over Q-values.
-
-        Args:
-            state (str): Discretized state string.
-
-        Returns:
-            str: Selected heuristic.
-        """
-        q_vals = np.array([self.q_values[state][h] for h in self.heuristics])
-        exp_q = np.exp(q_vals - np.max(q_vals))
-        probs = exp_q / np.sum(exp_q)
-        return np.random.choice(self.heuristics, p=probs)
 
     def get_heuristic_counts(self):
         return self.heuristic_counts.copy()
