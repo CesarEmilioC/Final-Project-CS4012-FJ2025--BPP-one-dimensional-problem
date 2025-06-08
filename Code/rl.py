@@ -35,19 +35,19 @@ class RLHyperHeuristic(HyperHeuristic):
 
         # Update Q-value if previous step exists
         if self.last_state is not None and self.last_heuristic is not None:
-            
-            # Calculate raw improvement in waste
+
+            # Reward as difference of squared waste (getObjValue already returns squared waste)
             raw_reward = self.last_waste - current_waste
-            
-            # Normalize the reward relative to previous waste to avoid scale issues
+
+            # Normalize relative to previous squared waste to avoid scale issues
             if self.last_waste > 1e-5:
                 normalized_reward = raw_reward / self.last_waste
             else:
                 normalized_reward = 0.0
-            
-            # Clip reward to the range [-1, 1] to prevent extreme Q-value updates
+
+            # Clip reward to [-1, 1] to keep Q-values stable
             reward = max(min(normalized_reward, 1.0), -1.0)
-            
+
             self._update_q_value(self.last_state, self.last_heuristic, reward)
 
         # Make sure state exists in Q-table
