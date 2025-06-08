@@ -10,18 +10,21 @@ The goal is to automatically learn **which heuristic to apply depending on the c
 
 ```
 .
-├── bpp.py
-├── hhproject.py             # Main script to run experiments
-├── phermes.py               # Base HyperHeuristic class
-├── rl.py                    # RLHyperHeuristic with Q-learning logic
+├── Code
+|   ├── bpp.py
+|   ├── hhproject.py             # Main script to run experiments
+|   ├── phermes.py               # Base HyperHeuristic class
+|   └── rl.py                    # RLHyperHeuristic with Q-learning logic
 ├── Instances/
 │   └── BPP/
 │       ├── Test set/
 │       └── Training set/
 ├── Results/
-│   ├── q_values.json        # (Generated) Learned Q-values
-│   └── resultados_globales.csv  # (Generated) Results per instance
+|   └──Results (run number)
+│     ├── q_values.json        # (Generated) Learned Q-values
+│     └── resultados_globales.csv  # (Generated) Results per instance
 ├── licence.txt
+├── requirements.txt
 └── readme.txt               # Original readme (optional, replace with this .md)
 ```
 
@@ -83,13 +86,12 @@ These features allow the agent to learn context-aware decisions.
 
 ## 📊 Output Files
 
-- `Results/resultados_globales.csv`: Contains results per test instance:
+- `Results/Results (run number)/resultados_globales.csv`: Contains results per test instance:
   - Instance name
   - Number of items
   - Bins used
   - Heuristics used
   - Objective (waste) value
 
-- `Results/q_values.json`: Stores the final learned Q-values for each state-action pair.
+- `Results/Results (run number)/q_values.json`: Stores the final learned Q-values for each state-action pair.
 
-Use these to evaluate performance or visualize learning behavior.
