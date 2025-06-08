@@ -52,7 +52,7 @@ class RLHyperHeuristic(HyperHeuristic):
 
         # Make sure state exists in Q-table
         if current_state not in self.q_values:
-            self.q_values[current_state] = {h: 1.0 for h in self.heuristics}
+            self.q_values[current_state] = {h: 0.0 for h in self.heuristics}
 
         # Select heuristic
         if random.random() < self.epsilon:
@@ -111,7 +111,7 @@ class RLHyperHeuristic(HyperHeuristic):
 
     def reset_counters(self):
         self.steps = 0
-        self.heuristic_counts = {h: 0 for h in self.heuristics}
+        self.heuristic_counts = {h: 0.0 for h in self.heuristics}
         self.last_heuristic = None
         self.last_waste = None
         self.last_state = None
