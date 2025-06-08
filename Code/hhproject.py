@@ -76,9 +76,9 @@ def solveHH(
                     "WASTE (OBJ)": round(obj, 4)
                 })
 
-    # Convert results to a DataFrame and print as a Markdown table
+    # Convert results to a DataFrame
     df = pd.DataFrame(results)
-    print(df.to_markdown(index=False))
+    # print(df.to_markdown(index=False))
 
     # Save summary to CSV
     df.to_csv(csv_path, index=False)
@@ -96,17 +96,28 @@ if __name__ == "__main__":
 
     # List of folders containing instance files for training and testing
     folders = ["Instances/BPP/Training set", "Instances/BPP/Test set"]
+    
+    # Run a new HH 30 times to discuss their performance, knowing that they receive the instances in a random order
+    for run in range(1, 31):
+        
+        print(f"Running Hyper-Heuristic #{run}")
+        # Instantiate an RL-based hyper-heuristic with a small epsilon (for exploration)
+        rl_hh = RLHyperHeuristic(heuristics, epsilon=0.1)
+        
+        # Create the result directory if it doesn't exist
+        result_dir = f"Results/Results {run}"
+        os.makedirs(result_dir, exist_ok=True)
 
-    # Instantiate an RL-based hyper-heuristic with a small epsilon (for exploration)
-    rl_hh = RLHyperHeuristic(heuristics, epsilon=0.1)
-
-    # Run the solver on all folders and save results
-    solveHH(
-        domain="BPP",
-        folders=folders,
-        hyperHeuristic=rl_hh,
-        repetitions=3,  # Solve each instance 3 times
-        reset_counters=True,  # Reset usage counters between runs
-        csv_path="Results/resultados_globales.csv",  # Output results file
-        q_values_path="Results/q_values.json"  # Output Q-values file
-    )
+        # Run the solver on all folders and save results
+        solveHH(
+            domain="BPP",
+            folders=folders,
+            hyperHeuristic=rl_hh,
+            repetitions=3,  # Solve each instance 3 times
+            reset_counters=True,  # Reset usage counters between runs
+            
+            csv_path=os.path.join(result_dir, "resultados_globales.csv"), # Output results file
+            q_values_path=os.path.join(result_dir, "q_values.json") # Output Q-values file
+        )
+        
+        print(f"Results of run #{run} have been added.")
