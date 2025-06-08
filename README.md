@@ -36,17 +36,17 @@ The goal is to automatically learn **which heuristic to apply depending on the c
 Install dependencies:
 
 ```bash
-pip install numpy pandas
+pip install requirements.txt
 ```
 
 ---
 
 ## 🧪 How to Run
 
-Run the hyper-heuristic experiments with:
+Run the hyper-heuristic experiments with from the root directory:
 
 ```bash
-python hhproject.py
+python Code/hhproject.py
 ```
 
 You can configure parameters like:
