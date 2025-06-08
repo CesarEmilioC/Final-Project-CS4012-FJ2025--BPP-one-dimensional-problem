@@ -95,7 +95,7 @@ if __name__ == "__main__":
     heuristics = ["FFIT", "BFIT", "WFIT", "AWFIT"]
 
     # List of folders containing instance files for training and testing
-    folders = ["Instances/Bpp/Training set", "Instances/Bpp/Test set"]
+    folders = ["Instances/BPP/Training set", "Instances/BPP/Test set"]
 
     # Instantiate an RL-based hyper-heuristic with a small epsilon (for exploration)
     rl_hh = RLHyperHeuristic(heuristics, epsilon=0.1)
