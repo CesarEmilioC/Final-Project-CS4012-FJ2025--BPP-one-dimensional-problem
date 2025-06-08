@@ -21,8 +21,8 @@ The goal is to automatically learn **which heuristic to apply depending on the c
 │       └── Training set/
 ├── Results/
 |   └──Results (run number)
-│     ├── q_values.json        # (Generated) Learned Q-values
-│     └── resultados_globales.csv  # (Generated) Results per instance
+│       ├── q_values.json        # (Generated) Learned Q-values
+│       └── resultados_globales.csv  # (Generated) Results per instance
 ├── licence.txt
 ├── requirements.txt
 └── readme.txt               # Original readme (optional, replace with this .md)
